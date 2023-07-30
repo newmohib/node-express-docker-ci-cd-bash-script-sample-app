@@ -1,0 +1,26 @@
+{
+  "name": "nodejs-docer-ci-cd-sample-app",
+  "version": "1.0.0",
+  "description": "NodeJS Docker CI/CD Sample App",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "development": "nodemon index.js",
+    "production": "node index.js",
+    "start:dev": "bash ./run_app.sh development",
+    "start:prod": "bash ./run_app.sh production"
+  },
+  "keywords": [
+    "NodeJS",
+    "ExressJS",
+    "Docker",
+    "CI/CD"
+  ],
+  "author": "Mohib",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1"
+  }
+}
