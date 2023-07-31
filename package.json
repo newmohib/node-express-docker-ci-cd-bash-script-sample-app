@@ -4,11 +4,12 @@
   "description": "NodeJS Docker CI/CD Sample App",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "development": "nodemon index.js",
-    "production": "node index.js",
-    "start:dev": "bash ./run_app.sh development",
-    "start:prod": "bash ./run_app.sh production"
+    "prerun:dev": "bash ./run_app_initial.sh dev",
+    "prerun:prod": "bash ./run_app_initial.sh prod",
+    "dev": "nodemon index.js",
+    "prod": "node index.js",
+    "start:dev": "bash ./run_app.sh dev",
+    "start:prod": "bash ./run_app.sh prod"
   },
   "keywords": [
     "NodeJS",

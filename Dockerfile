@@ -28,4 +28,4 @@ EXPOSE 3000
 # CMD ["bash", "run_app.sh", "$NODE_ENV"]
 
 # Use the sh -c command to execute npm start with the NODE_ENV variable
-CMD sh -c "npm start $NODE_ENV"
+CMD sh -c "npm run $NODE_ENV"
