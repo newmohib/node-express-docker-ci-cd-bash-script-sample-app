@@ -44,7 +44,24 @@ fi
 
 # Check if the Docker container exists and stop it if running
 if docker ps -a | grep -q "nodejs-sample-app-1:$1"; then
-  stop_and_remove_container $1
+  # Try running the new image with a temporary container
+  echo "Trying to run the new image with a temporary container..."
+
+  if docker run --name temp-container nodejs-sample-app-1:$1; then
+    # Stop and remove the existing container
+    echo "Stop and remove the existing container..."
+    stop_and_remove_container $1
+    # Remove the temporary container
+    echo "Remove the temporary container..."
+    docker rm temp-container
+  else
+    # Remove the failed temporary container
+    echo "Remove the failed temporary container for failed to run..."
+    docker rm temp-container
+    echo "Failed to run the new image. Using existing image and container..."
+    exit 1
+  fi
+
 fi
 
 # Check if the Docker image exists and remove it
@@ -57,24 +74,3 @@ build_image $1
 
 # Run the Docker container
 run_container $1
-
-
-# Build the Docker image based on the provided mode
-
-# if [ "$1" == "dev" ]; then
-#     echo "Started: Development"
-#     # Build the Docker image
-#     docker build -t nodejs-sample-app-1:dev --build-arg NODE_ENV=dev .
-
-#     # Run a container based on the built image with dev directory like "$(pwd)"
-#     docker run -p 3000:3000 -v "$(pwd)":/app nodejs-sample-app-1:$1 
-
-# else
-#     echo "Started: Production Mode"
-#     docker build -t nodejs-sample-app-1:prod --build-arg NODE_ENV=prod .
-
-#     # Run a container based on the built image
-#     docker run -p 3000:3000 nodejs-sample-app-1:$1
-    
-# fi
-
