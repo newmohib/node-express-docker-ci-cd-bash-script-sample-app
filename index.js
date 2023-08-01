@@ -7,12 +7,9 @@ const port = 3000;
 // Global Middleware
 app.use(cors());
 
-
-
 app.get('/', (req, res) => {
     res.send('Start Sample app with Docker configuration and Bash ');
 });
-
 
 
 app.listen(port, () => {
