@@ -10,7 +10,7 @@ app.use(cors());
 
 
 app.get('/', (req, res) => {
-    res.send('Start Sample app with Docker configuration and Bash ');
+    res.send('success');
 });
 
 

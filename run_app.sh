@@ -60,6 +60,21 @@ show_usage() {
   echo "Invalid argument. Usage: $0 [dev|prod]"
 }
 
+# Function to check the application's API endpoint
+check_application_endpoint() {
+  echo "Checking the application's API endpoint..."
+  response=$(curl -s localhost:3000/)  # Send GET request to the API endpoint and store response in 'response' variable
+  echo "response- check_application_endpoint $response"
+  # Check if the response is successful or not
+  if [[ "$response" == *"success"* ]]; then
+    echo "API endpoint is successful. Response: $response"
+    return 0
+  else
+    echo "API endpoint is not successful. Response: $response"
+    return 1
+  fi
+}
+
 # Trap signals for cleanup
 trap 'cleanup' ERR
 
@@ -90,6 +105,32 @@ if docker image ls -q "$docker_image_name:$1" >/dev/null; then
   remove_image "$1"
 fi
 
+
+
+
+# # Check if the main container exists; if not, build and run it directly
+# if ! docker ps -a | grep -q "$docker_image_name-container"; then
+#   # Create a volume to save the state of the app
+#   create_temp_volume
+
+#   # Backup app data to the temporary volume
+#   backup_app_data
+
+#   # Build the Docker image
+#   if build_image "$1"; then
+#     # Run the Docker container with the fixed port 3000
+#     run_container "$docker_image_name-container" "$1"
+#     exit 0
+#   else
+#     echo "Failed to build the Docker image."
+#     # Restore app data from the temporary volume to rollback changes
+#     restore_app_data
+#     exit 1
+#   fi
+# fi
+
+
+
 # Check if the main container exists; if not, build and run it directly
 if ! docker ps -a | grep -q "$docker_image_name-container"; then
   # Create a volume to save the state of the app
@@ -102,6 +143,17 @@ if ! docker ps -a | grep -q "$docker_image_name-container"; then
   if build_image "$1"; then
     # Run the Docker container with the fixed port 3000
     run_container "$docker_image_name-container" "$1"
+
+    # Call the function to check the application's API endpoint
+    if check_application_endpoint; then
+      echo "Application is running successfully."
+    else
+      echo "Application is not running successfully."
+      # Restore app data from the temporary volume to rollback changes
+      restore_app_data
+      exit 1
+    fi
+
     exit 0
   else
     echo "Failed to build the Docker image."
@@ -110,6 +162,7 @@ if ! docker ps -a | grep -q "$docker_image_name-container"; then
     exit 1
   fi
 fi
+
 
 # Create a volume to save the state of the app
 create_temp_volume
